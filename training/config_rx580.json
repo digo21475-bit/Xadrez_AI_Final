@@ -1,0 +1,16 @@
+{
+  "mcts_sims": 80,
+  "batch_size": 128,
+  "replay_capacity": 100000,
+  "model": {
+    "channels": 64,
+    "blocks": 6,
+    "in_planes": 13,
+    "action_size": 20480
+  },
+  "trainer": {
+    "lr": 0.001,
+    "wd": 1e-4,
+    "iters": 200
+  }
+}

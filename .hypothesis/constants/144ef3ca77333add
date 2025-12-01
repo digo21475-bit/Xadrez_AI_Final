@@ -1,0 +1,4 @@
+# file: /home/mike/PycharmProjects/Xadrez_AI_Final/engine/ordering/mvv_lva.py
+# hypothesis_version: 6.148.3
+
+[100, 320, 330, 500, 900, 1000, 10000, 'BISHOP', 'KING', 'KNIGHT', 'PAWN', 'QUEEN', 'ROOK']

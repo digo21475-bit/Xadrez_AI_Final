@@ -1,0 +1,4 @@
+# file: /home/mike/PycharmProjects/Xadrez_AI_Final/engine/search/alphabeta.py
+# hypothesis_version: 6.148.3
+
+[-9999999, 'captured', 'generate_legal_moves', 'is_capture', 'zobrist_key']

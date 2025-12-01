@@ -1,0 +1,37 @@
+# Ambiente virtual
+venv/
+.venv/
+
+# Modelos / pesos grandes
+models.AgentA/
+models/
+*.pt
+*.pth
+*.ckpt
+
+# Cache Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Notebooks grandes (opcional)
+*.ipynb
+
+# Arquivos temporários
+*.log
+*.tmp
+
+# IDE / Editor
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+
+# Geradores e ferramentas
+tools/magics/generate_magics
+tools/magics/*.bin
+
+# Diretórios pessoais
+pessoal/
+logs/

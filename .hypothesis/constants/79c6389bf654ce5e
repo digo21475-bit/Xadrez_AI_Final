@@ -1,0 +1,4 @@
+# file: /home/mike/PycharmProjects/Xadrez_AI_Final/engine/movepicker.py
+# hypothesis_version: 6.148.3
+
+[512, 1000, 800000, 900000, 1000000, 10000000]

@@ -1,0 +1,66 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": ["# Xadrez_AI_Final — Teste de Execução no Colab"]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+     "# Clonar o repositório diretamente do GitHub\n",
+     "!git clone https://github.com/devolopbomfim/Xadrez_AI_Final.git Xadrez_AI_Final\n",
+     "%cd Xadrez_AI_Final"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+     "# Instalar dependências do projeto caso existam\n",
+     "!pip install -r requirements.txt || echo 'Nenhum requirements.txt encontrado'"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+     "# Teste simples: importar o core do projeto\n",
+     "from core.board.board import Board\n",
+     "b = Board()\n",
+     "b" 
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+     "# Teste de perft rápido\n",
+     "from core.perft.perft import perft\n",
+     "print(perft(Board(), 1))"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "name": "python",
+   "version": "3.10"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}

@@ -1,0 +1,4 @@
+# file: /home/mike/PycharmProjects/Xadrez_AI_Final/core/moves/magic/magic_bitboards.py
+# hypothesis_version: 6.148.3
+
+['.', '1', 'BISHOP', 'BISHOP_GOOD_MAGICS', 'BISHOP_MASKS', 'BISHOP_RELEVANT_BITS', 'BISHOP_SHIFTS', 'ROOK', 'ROOK_ATTACK_OFFSETS', 'ROOK_GOOD_MAGICS', 'ROOK_MASKS', 'ROOK_RELEVANT_BITS', 'ROOK_SHIFTS', '_BISHOP_ATT_TABLE', '_INITIALIZED', '_MASK_POSITIONS', '_ROOK_ATT_TABLE', 'bishop_attacks', 'index_to_occupancy', 'init', 'lsb_index', 'mask_bishop_attacks', 'mask_bits_positions', 'mask_rook_attacks', 'msb_index', 'rook_attacks', 'show_bitboard', 'sliding_attacks']

@@ -1,0 +1,4 @@
+# file: /home/mike/PycharmProjects/Xadrez_AI_Final/core/__init__.py
+# hypothesis_version: 6.148.3
+
+['Board', 'Move', 'generate_legal_moves', 'get_game_status', 'perft']

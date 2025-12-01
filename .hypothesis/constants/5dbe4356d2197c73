@@ -1,0 +1,4 @@
+# file: /home/mike/PycharmProjects/Xadrez_AI_Final/agents/__init__.py
+# hypothesis_version: 6.148.3
+
+['Agent', 'EngineAgent', 'HumanAgent', 'RandomAgent']

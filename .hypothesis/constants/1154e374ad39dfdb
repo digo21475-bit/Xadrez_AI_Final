@@ -1,0 +1,4 @@
+# file: /home/mike/PycharmProjects/Xadrez_AI_Final/interface/tui/game_setup.py
+# hypothesis_version: 6.148.3
+
+['Cancelar', 'Engine', 'Humano', 'Iniciar', 'RadioButton', 'Random', 'black_engine', 'black_human', 'black_player', 'black_random', 'bold cyan', 'bold yellow', 'btn_cancel', 'btn_start', 'button_group', 'engine', 'human', 'primary', 'random', 'section_title', 'setup_container', 'white_engine', 'white_human', 'white_player', 'white_random']

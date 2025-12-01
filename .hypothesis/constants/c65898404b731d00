@@ -1,0 +1,4 @@
+# file: /home/mike/PycharmProjects/Xadrez_AI_Final/interface/gui/screens/gameover.py
+# hypothesis_version: 6.148.3
+
+[150, 250, 350, 1000, '?', 'BLACK WINS!', 'DRAW', 'WHITE WINS!', 'black_win', 'draw', 'white_win']

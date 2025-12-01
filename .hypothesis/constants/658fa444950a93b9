@@ -1,0 +1,4 @@
+# file: /home/mike/PycharmProjects/Xadrez_AI_Final/engine/move_ordering.py
+# hypothesis_version: 6.148.3
+
+[100, 320, 330, 500, 900, 1000, 20000, 'BISHOP', 'KING', 'KNIGHT', 'PAWN', 'QUEEN', 'ROOK', 'captured', 'piece', 'uci']

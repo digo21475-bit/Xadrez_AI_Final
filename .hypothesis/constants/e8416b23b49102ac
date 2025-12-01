@@ -1,0 +1,4 @@
+# file: /home/mike/PycharmProjects/Xadrez_AI_Final/core/moves/tables/attack_tables.py
+# hypothesis_version: 6.148.3
+
+[72340172838076673, 144680345676153346, 4629771061636907072, 9259542123273814144, 'BISHOP_GEOMETRY_RAYS', 'BISHOP_MASKS', 'KING_ATTACKS', 'KNIGHT_ATTACKS', 'PAWN_ATTACKS', 'ROOK_GEOMETRY_RAYS', 'ROOK_MASKS', '_INITIALIZED', 'bishop_attacks', 'init', 'king_attacks', 'knight_attacks', 'pawn_attacks', 'queen_attacks', 'rook_attacks']

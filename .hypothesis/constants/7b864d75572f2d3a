@@ -1,0 +1,4 @@
+# file: /home/mike/PycharmProjects/Xadrez_AI_Final/engine/search/impl.py
+# hypothesis_version: 6.148.3
+
+[-99999999, 'is_capture', 'make_move', 'make_move_int', 'unmake_move', 'unmake_move_int', 'zobrist_key']

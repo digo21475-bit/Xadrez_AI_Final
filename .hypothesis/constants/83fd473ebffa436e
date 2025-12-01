@@ -1,0 +1,4 @@
+# file: /home/mike/PycharmProjects/Xadrez_AI_Final/core/hash/zobrist.py
+# hypothesis_version: 6.148.3
+
+[b'||', 0.0, 12648430, 'Zobrist', '_default', 'ensure_initialized', 'init', 'reset', 'signature', 'utf-8', 'verify_entropy', 'xor_castling', 'xor_enpassant', 'xor_piece', 'xor_side']

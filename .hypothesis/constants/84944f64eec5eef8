@@ -1,0 +1,4 @@
+# file: /home/mike/PycharmProjects/Xadrez_AI_Final/game_manager.py
+# hypothesis_version: 6.148.3
+
+[1000, '50-move rule', '?', 'Checkmate', 'Draw', 'GameManager', 'Invalid move (None)', 'No legal moves', 'Repetition', 'Stalemate', 'black_agent', 'draw', 'engine_vs_engine', 'fullmove', 'human_vs_engine', 'human_vs_human', 'human_vs_random', 'random_vs_engine', 'random_vs_random', 'reason', 'result', 'white_agent']

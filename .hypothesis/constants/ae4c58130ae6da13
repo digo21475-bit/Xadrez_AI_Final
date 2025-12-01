@@ -1,0 +1,4 @@
+# file: /home/mike/PycharmProjects/Xadrez_AI_Final/core/board/board.py
+# hypothesis_version: 6.148.3
+
+['-', '/', 'B', 'Board', 'K', 'Move', 'N', 'No piece at from_sq', 'No state to pop', 'P', 'Q', 'R', '_state_stack', 'a', 'all_occupancy', 'b', 'bitboards', 'castling_rights', 'en_passant_square', 'fullmove_number', 'halfmove_clock', 'k', 'mailbox', 'n', 'occupancy', 'p', 'q', 'r', 'side_to_move', 'square_index', 'w', 'zobrist_key']

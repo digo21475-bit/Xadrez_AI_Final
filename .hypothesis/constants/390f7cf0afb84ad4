@@ -1,0 +1,4 @@
+# file: /home/mike/PycharmProjects/Xadrez_AI_Final/interface/tui/renderer.py
+# hypothesis_version: 6.148.3
+
+[0.7, 136, 181, 217, 240, 255, '.', '..', '1fr', '40', '?', 'B', 'BISHOP', 'Board', 'DejaVuSans.ttf', 'DejaVuSansMono.ttf', 'DejaVuSerif.ttf', 'K', 'KING', 'KNIGHT', 'Log', 'Movimentos', 'N', 'No board loaded', 'P', 'PAWN', 'Q', 'QUEEN', 'R', 'RGBA', 'ROOK', 'Status', 'assets', 'auto', 'b', 'bishop', 'k', 'king', 'knight', 'n', 'name', 'p', 'pawn', 'q', 'queen', 'r', 'rook', 'round', 'ttf', 'w', 'white', '♔', '♕', '♖', '♗', '♘', '♙', '♚', '♛', '♜', '♝', '♞', '♟']

@@ -1,0 +1,4 @@
+# file: /home/mike/PycharmProjects/Xadrez_AI_Final/engine/search/iterative.py
+# hypothesis_version: 6.148.3
+
+['best_move', 'depth', 'nodes', 'pv', 'score', 'zobrist_key']

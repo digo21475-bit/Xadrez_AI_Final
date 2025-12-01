@@ -1,0 +1,4 @@
+# file: /home/mike/PycharmProjects/Xadrez_AI_Final/engine/eval/evaluator.py
+# hypothesis_version: 6.148.3
+
+[100, 320, 330, 500, 900, 20000, 'BISHOP', 'Color', 'KING', 'KNIGHT', 'PAWN', 'QUEEN', 'ROOK', 'WHITE', 'generate_legal_moves', 'legal_moves', 'name']

@@ -1,0 +1,4 @@
+# file: /home/mike/PycharmProjects/Xadrez_AI_Final/engine/ordering/__init__.py
+# hypothesis_version: 6.148.3
+
+['HistoryTable', 'Killers', 'score_capture']

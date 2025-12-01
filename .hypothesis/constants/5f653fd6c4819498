@@ -1,0 +1,4 @@
+# file: /home/mike/PycharmProjects/Xadrez_AI_Final/interface/gui/config.py
+# hypothesis_version: 6.148.3
+
+[100, 120, 130, 136, 150, 180, 181, 200, 217, 240, 250, 255, 300, 700, 1000, 'Engine vs Engine', 'Engine vs Random', 'Human vs Engine', 'Human vs Human', 'Human vs Random', 'Random vs Random', 'engine', 'human', 'random']

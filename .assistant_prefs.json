@@ -1,0 +1,12 @@
+{   "github.copilot.chat.maxResponseTokens": 256,
+    "github.copilot.chat.maxPromptTokens": 2048,
+    "github.copilot.chat.experimental.allowAnonymousTelemetry": false,
+    "github.copilot.inlineSuggest.enable": true,
+    "github.copilot.editor.enableAutoCompletions": false,
+    "github.copilot.editor.enableCodeActions": false,
+    "github.copilot.advanced": {
+        "debug.level": "error"
+    },
+    "token_economy": true, "note": "Prefer concise replies, minimize tokens."
+    
+}

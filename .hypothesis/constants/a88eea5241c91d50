@@ -1,0 +1,4 @@
+# file: /home/mike/PycharmProjects/Xadrez_AI_Final/core/rules/draw_repetition.py
+# hypothesis_version: 6.148.3
+
+[100, '1', '_count', '_frames', '_stack']

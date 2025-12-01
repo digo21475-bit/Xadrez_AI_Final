@@ -1,0 +1,4 @@
+# file: /home/mike/PycharmProjects/Xadrez_AI_Final/utils/enums.py
+# hypothesis_version: 6.148.3
+
+['Color', 'GameResult', 'MoveType', 'PieceIndex', 'PieceType', 'piece_index']

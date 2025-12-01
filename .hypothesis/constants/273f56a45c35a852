@@ -1,0 +1,4 @@
+# file: /home/mike/PycharmProjects/Xadrez_AI_Final/interface/tui/commands.py
+# hypothesis_version: 6.148.3
+
+['12345678', '?', 'Em andamento', 'abcdefgh', 'check_game_status', 'find_move', 'format_status', 'halfmove_clock', 'is_move_format', 'parse_command', 'parse_move', 'side_to_move', 'to_uci']
