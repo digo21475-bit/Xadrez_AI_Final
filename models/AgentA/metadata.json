@@ -1,0 +1,9 @@
+{
+  "name": "AgentA",
+  "created": "",
+  "seed": 42,
+  "hyperparams": {},
+  "trained_steps": 0,
+  "final_checkpoint": "models/AgentA/checkpoints/ckpt_000000.pt",
+  "last_updated": "2025-11-30T20:45:07.092008"
+}
