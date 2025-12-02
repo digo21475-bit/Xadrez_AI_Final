@@ -3,8 +3,6 @@ venv/
 .venv/
 
 # models / checkpoints
-models/
-models.AgentA/
 *.pt
 *.pth
 *.ckpt
@@ -30,3 +28,56 @@ dist/
 # logs
 *.log
 logs/
+
+# Large artifacts and datasets (do NOT commit large binary files)
+# Keep model checkpoints, replay buffers and large datasets out of git
+# Use a separate storage (Drive, S3) or LFS if you must track large files
+
+# model checkpoints / replay buffers
+models/*/checkpoints/
+*.replay
+replay.pt
+
+# PyTorch / checkpoints
+*.pt
+*.pth
+*.ckpt
+*.tar.gz
+*.zip
+*.tar
+
+# Large numpy / arrays
+*.npy
+*.npz
+
+# datasets / downloads
+data/
+dataset/
+datasets/
+downloads/
+
+# virtualenvs / environment
+venv/
+.venv/
+env/
+ENV/
+
+# Jupyter and notebooks outputs
+.ipynb_checkpoints
+
+# media and archives
+*.mp4
+*.mkv
+*.mov
+*.iso
+
+# coverage and CI artifacts
+.coverage
+coverage.xml
+.pytest_cache/
+
+# OS files
+.DS_Store
+
+# NOTE: This .gitignore cannot enforce file-size rules. A pre-push hook
+# is added in `.githooks/pre-push` to block pushes that include files >=100MB.

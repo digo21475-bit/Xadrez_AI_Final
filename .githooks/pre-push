@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+# pre-push hook to prevent pushing files >= 100MB
+# This script examines the commits that are about to be pushed and aborts
+# if any file in those commits exceeds the threshold.
+
+THRESHOLD=$((100 * 1024 * 1024))
+FAILED=0
+
+# Read refs from stdin (local_ref local_sha remote_ref remote_sha)
+while read local_ref local_sha remote_ref remote_sha
+do
+  # If remote_sha is all zeros, it's a new branch; consider all commits reachable from local_sha
+  if [[ "$remote_sha" =~ ^0+$ ]]; then
+    RANGE="$local_sha"
+  else
+    RANGE="$local_sha ^$remote_sha"
+  fi
+
+  # Iterate commits in the range
+  for commit in $(git rev-list $RANGE); do
+    # List tree objects with sizes
+    # Format: <mode> <type> <object> <size>\t<file>
+    git ls-tree -r -l $commit | while read -r mode type object size_and_path; do
+      # Some versions output different columns; parse size and path robustly
+      # Use awk to safely extract size and path
+      size=$(git ls-tree -r -l $commit | awk -v c="$commit" '$0 ~ c { if (NF>=4) print $(NF-1); }' 2>/dev/null)
+      # Fallback: parse current line
+      size_field=$(echo "$mode $type $object $size_and_path" | awk '{print $(NF-1)}')
+      file_field=$(echo "$mode $type $object $size_and_path" | awk '{print $NF}')
+
+      # Prefer size_field if numeric
+      if [[ "$size_field" =~ ^[0-9]+$ ]]; then
+        size_bytes=$size_field
+      elif [[ "$size" =~ ^[0-9]+$ ]]; then
+        size_bytes=$size
+      else
+        size_bytes=0
+      fi
+
+      # If file_field is empty, try to parse from end of line
+      if [[ -z "$file_field" ]]; then
+        file_field=$(echo "$mode $type $object $size_and_path" | awk '{print $NF}')
+      fi
+
+      if [[ $size_bytes -ge $THRESHOLD ]]; then
+        echo "[pre-push] ERROR: file in commit $commit exceeds threshold ($size_bytes bytes): $file_field"
+        FAILED=1
+      fi
+    done
+  done
+done
+
+if [[ $FAILED -ne 0 ]]; then
+  echo "\nPush aborted: one or more files exceed ${THRESHOLD} bytes (~100MB)."
+  echo "If you really need to version large files, consider using Git LFS or external storage (S3/Drive)."
+  exit 1
+fi
+
+exit 0
