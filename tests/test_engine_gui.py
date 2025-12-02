@@ -16,7 +16,7 @@ except ImportError as e:
     sys.exit(1)
 
 
-async def test_engine_vs_engine_simple():
+async def _test_engine_vs_engine_simple_impl():
     """Teste simples: random vs random (engine tem problema de sintaxe em Py3.8)."""
     print("[TEST] Starting Random vs Random")
     
@@ -69,6 +69,11 @@ async def test_engine_vs_engine_simple():
     print("[TEST] PASSED")
 
 
+def test_engine_vs_engine_simple():
+    """Synchronous wrapper that runs the async engine-vs-engine test."""
+    asyncio.run(_test_engine_vs_engine_simple_impl())
+
+
 if __name__ == "__main__":
-    asyncio.run(test_engine_vs_engine_simple())
+    asyncio.run(_test_engine_vs_engine_simple_impl())
 

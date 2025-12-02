@@ -46,17 +46,10 @@ def run_iteration(
         # pick device once for this run
         device = get_device()
 
-        def net_predict(board):
-            from .encoder import board_to_tensor
-            x = board_to_tensor(board)
-            t = torch.tensor(x[None], dtype=torch.float32, device=device)
-            pi, v = model(t)
-            # return tensors on the model device; conversion to CPU/numpy
-            # is done by MCTS when needed
-            return pi[0].detach(), v[0].detach()
-
         model = make_model(device=device, channels=64, blocks=6)
-        worker = SelfPlayWorker(net_predict, mcts_sims=selfplay_sims)
+        from .net import make_net_predictor
+        net = make_net_predictor(model)
+        worker = SelfPlayWorker(net, mcts_sims=selfplay_sims)
         buf = ReplayBuffer(
             os.path.join(agent_dir, 'checkpoints/replay.pt'),
             capacity=200_000

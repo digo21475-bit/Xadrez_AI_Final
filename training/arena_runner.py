@@ -9,15 +9,8 @@ from .device import get_device
 
 
 def net_predict_factory_from_model(model):
-    def predict(board):
-        from training.encoder import board_to_tensor
-        import torch
-        x = board_to_tensor(board)
-        dev = next(model.parameters()).device
-        t = torch.tensor(x[None], dtype=torch.float32, device=dev)
-        pi, v = model(t)
-        return pi[0].detach(), v[0].detach()
-    return predict
+    from training.net import make_net_predictor
+    return make_net_predictor(model)
 
 
 def play_match(ckptA, ckptB, games=20, sims=50):

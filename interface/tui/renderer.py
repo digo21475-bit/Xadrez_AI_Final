@@ -129,24 +129,9 @@ def build_board_image(board, tile_size: int = 48):
         'ROOK': 'rook', 'QUEEN': 'queen', 'KING': 'king'
     }
 
-    # Try to load a DejaVu TTF from bundled assets to render Unicode piece glyphs
+    # We no longer attempt to render Unicode glyphs via bundled TTF fonts.
+    # Rely exclusively on PNG piece assets stored under `assets/pieces/`.
     font = None
-    try:
-        font_candidates = [
-            os.path.join(assets_dir, 'dejavu-fonts-ttf-2.37', 'ttf', 'DejaVuSans.ttf'),
-            os.path.join(assets_dir, 'dejavu-fonts-ttf-2.37', 'ttf', 'DejaVuSansMono.ttf'),
-            os.path.join(assets_dir, 'dejavu-fonts-ttf-2.37', 'ttf', 'DejaVuSerif.ttf'),
-        ]
-        for fp in font_candidates:
-            if os.path.exists(fp):
-                try:
-                    # font size chosen proportionally to tile size
-                    font = ImageFont.truetype(fp, int(tile_size * 0.7))
-                    break
-                except Exception:
-                    font = None
-    except Exception:
-        font = None
 
     # Iterate squares and paste piece images
     for sq in range(64):
@@ -164,36 +149,9 @@ def build_board_image(board, tile_size: int = 48):
         pname = piece_map.get(name_key)
         if not pname:
             continue
-        # If a DejaVu TTF was loaded, render the Unicode chess glyph instead
-        if font is not None:
-            try:
-                pair = PIECE_UNICODE.get(ptype, ('?', '?'))
-                ch = pair[0] if colr == Color.WHITE else pair[1]
-
-                # measure text and center it in the tile
-                bbox = draw.textbbox((0, 0), ch, font=font)
-                w = bbox[2] - bbox[0]
-                h = bbox[3] - bbox[1]
-
-                file = sq % 8
-                rank = sq // 8
-                x = file * tile_size + (tile_size - w) // 2
-                y = (7 - rank) * tile_size + (tile_size - h) // 2
-
-                # choose contrasting fill colors for white/black pieces
-                fill_white = (240, 240, 240, 255)
-                fill_black = (15, 15, 15, 255)
-                fill = fill_white if colr == Color.WHITE else fill_black
-
-                draw.text((x, y), ch, font=font, fill=fill)
-                continue
-            except Exception:
-                # fall back to PNG approach below
-                pass
-
-        # fallback to image-based pieces when font not available or drawing failed
-        color_prefix = 'w' if colr == Color.WHITE else 'b'
-        fname = os.path.join(assets_dir, f"{color_prefix}_{pname}.png")
+        # Use image-based pieces located in assets/pieces/ with full color names
+        color_prefix = 'white' if colr == Color.WHITE else 'black'
+        fname = os.path.join(assets_dir, 'pieces', f"{color_prefix}_{pname}.png")
         if not os.path.exists(fname):
             continue
 

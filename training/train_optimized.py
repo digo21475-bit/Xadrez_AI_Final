@@ -91,12 +91,22 @@ def train_step(
 
     # Forward with optional AMP
     if use_amp:
-        with torch.cuda.amp.autocast(dtype=dtype):
+        # Use new torch.amp.autocast API and select device type to avoid deprecation
+        device_type = device.type if hasattr(device, 'type') else 'cpu'
+        # CPU autocast supports only bfloat16/float16; avoid autocast if dtype unsupported
+        if device_type == 'cpu' and dtype not in (torch.bfloat16, torch.float16):
             pi_logits, v = model(states)
             target = pis.argmax(dim=1).long()
             loss_pi = loss_fn_pi(pi_logits, target)
             loss_v = loss_fn_v(v.squeeze(-1), outcomes)
             loss = loss_pi + loss_v
+        else:
+            with torch.amp.autocast(device_type=device_type, dtype=dtype):
+                pi_logits, v = model(states)
+                target = pis.argmax(dim=1).long()
+                loss_pi = loss_fn_pi(pi_logits, target)
+                loss_v = loss_fn_v(v.squeeze(-1), outcomes)
+                loss = loss_pi + loss_v
     else:
         pi_logits, v = model(states)
         target = pis.argmax(dim=1).long()

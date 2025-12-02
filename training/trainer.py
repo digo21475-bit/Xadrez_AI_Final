@@ -26,16 +26,32 @@ def train_loop(model: nn.Module, buffer: ReplayBuffer, cfg: dict, device=None):
     iters = cfg.get('iters', 100)
     loss_fn_pi = nn.CrossEntropyLoss()
     loss_fn_v = nn.MSELoss()
+    
+    # Weights for combining step and final rewards
+    weight_step_reward = cfg.get('weight_step_reward', 0.3)
+    weight_final_reward = cfg.get('weight_final_reward', 0.7)
 
     best_win = -1.0
     for it in range(iters):
         batch = buffer.sample(bsz)
         if not batch:
             continue
+        
+        # Handle both old format (state, pi, player, outcome) and new format (state, pi, player, step_reward, final_reward)
+        has_step_rewards = len(batch[0]) >= 5
+        
         # fast tensor creation via numpy stacking
         states = torch.tensor(np.array([b[0] for b in batch]), dtype=torch.float32, device=device)
         pis = torch.tensor(np.array([b[1] for b in batch]), dtype=torch.float32, device=device)
-        outcomes = torch.tensor(np.array([b[3] for b in batch]), dtype=torch.float32, device=device)
+        
+        if has_step_rewards:
+            step_rewards = torch.tensor(np.array([b[3] for b in batch]), dtype=torch.float32, device=device)
+            final_rewards = torch.tensor(np.array([b[4] for b in batch]), dtype=torch.float32, device=device)
+            # Combine step and final rewards
+            outcomes = weight_step_reward * step_rewards + weight_final_reward * final_rewards
+        else:
+            # Fallback to old format (just final outcome)
+            outcomes = torch.tensor(np.array([b[3] for b in batch]), dtype=torch.float32, device=device)
 
         opt.zero_grad()
         pi_logits, v = model(states)
