@@ -5,6 +5,7 @@ from __future__ import annotations
 from training.selfplay import SelfPlayWorker
 from training.model import make_model
 from core.board.board import Board
+from .device import get_device
 
 
 def net_predict_factory_from_model(model):
@@ -12,19 +13,21 @@ def net_predict_factory_from_model(model):
         from training.encoder import board_to_tensor
         import torch
         x = board_to_tensor(board)
-        t = torch.tensor(x[None], dtype=torch.float32)
+        dev = next(model.parameters()).device
+        t = torch.tensor(x[None], dtype=torch.float32, device=dev)
         pi, v = model(t)
-        return pi[0].detach().cpu(), v[0].detach().cpu()
+        return pi[0].detach(), v[0].detach()
     return predict
 
 
 def play_match(ckptA, ckptB, games=20, sims=50):
     import torch
     cfg = {'channels':64,'blocks':6,'in_planes':13,'action_size':20480}
-    A = make_model(device='cpu', **cfg)
-    B = make_model(device='cpu', **cfg)
-    A.load_state_dict(torch.load(ckptA, map_location='cpu'))
-    B.load_state_dict(torch.load(ckptB, map_location='cpu'))
+    device = get_device()
+    A = make_model(device=device, **cfg)
+    B = make_model(device=device, **cfg)
+    A.load_state_dict(torch.load(ckptA, map_location=device))
+    B.load_state_dict(torch.load(ckptB, map_location=device))
     netA = net_predict_factory_from_model(A)
     netB = net_predict_factory_from_model(B)
 

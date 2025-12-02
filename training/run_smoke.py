@@ -13,9 +13,11 @@ def net_predict_factory(model):
         from training.encoder import board_to_tensor
         import torch
         x = board_to_tensor(board)
-        t = torch.tensor(x[None], dtype=torch.float32)
+        # respect model device
+        dev = next(model.parameters()).device
+        t = torch.tensor(x[None], dtype=torch.float32, device=dev)
         pi, v = model(t)
-        return pi[0].detach().cpu(), v[0].detach().cpu()
+        return pi[0].detach(), v[0].detach()
     return predict
 
 
@@ -44,13 +46,15 @@ def main():
         from training.model import make_model
         from training.replay_buffer import ReplayBuffer
         from training.selfplay import SelfPlayWorker
+        from training.device import get_device
     except Exception as e:
         print('Torch or model not available:', e)
         print('Prechecks passed; smoke-run skipped (no torch).')
         return
 
     # small model
-    model = make_model(device='cpu', channels=32, blocks=2, action_size=20480)
+    device = get_device()
+    model = make_model(device=device, channels=32, blocks=2, action_size=20480)
     net = net_predict_factory(model)
     worker = SelfPlayWorker(net_predict=net, mcts_sims=10)
     b = Board()

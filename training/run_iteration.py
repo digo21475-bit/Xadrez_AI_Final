@@ -1,11 +1,13 @@
 """Full training iteration: selfplay → replay buffer → trainer → evaluate_and_promote.
 Usage:
-  python3 training/run_iteration.py models/AgentA --iteration 0 --games 10 --selfplay-games 5
+  python3 -m training.run_iteration models/AgentA --iteration 0 --num-selfplay 5
 """
 from __future__ import annotations
 import argparse, os, json, time, sys
-from training.prechecks import run_prechecks
-from training.metadata_utils import update_metadata
+import torch
+from .prechecks import run_prechecks
+from .metadata_utils import update_metadata
+from .device import get_device
 
 
 def run_iteration(
@@ -36,20 +38,24 @@ def run_iteration(
     # Step 2: Self-play (generate replay buffer data)
     print(f"[2/4] Running {num_selfplay} self-play games...")
     try:
-        from training.selfplay import SelfPlayWorker
-        from training.model import make_model
-        from training.replay_buffer import ReplayBuffer
+        from .selfplay import SelfPlayWorker
+        from .model import make_model
+        from .replay_buffer import ReplayBuffer
         from core.board.board import Board
 
-        def net_predict(board):
-            from training.encoder import board_to_tensor
-            import torch
-            x = board_to_tensor(board)
-            t = torch.tensor(x[None], dtype=torch.float32)
-            pi, v = model(t)
-            return pi[0].detach().cpu(), v[0].detach().cpu()
+        # pick device once for this run
+        device = get_device()
 
-        model = make_model(device='cpu', channels=64, blocks=6)
+        def net_predict(board):
+            from .encoder import board_to_tensor
+            x = board_to_tensor(board)
+            t = torch.tensor(x[None], dtype=torch.float32, device=device)
+            pi, v = model(t)
+            # return tensors on the model device; conversion to CPU/numpy
+            # is done by MCTS when needed
+            return pi[0].detach(), v[0].detach()
+
+        model = make_model(device=device, channels=64, blocks=6)
         worker = SelfPlayWorker(net_predict, mcts_sims=selfplay_sims)
         buf = ReplayBuffer(
             os.path.join(agent_dir, 'checkpoints/replay.pt'),
@@ -76,7 +82,7 @@ def run_iteration(
     # Step 3: Train
     print(f"[3/4] Training for {trainer_iters} iterations...")
     try:
-        from training.trainer import train_loop
+        from .trainer import train_loop
 
         cfg = {
             'ckpt_dir': os.path.join(agent_dir, 'checkpoints'),
@@ -85,7 +91,8 @@ def run_iteration(
             'wd': 1e-4,
             'iters': trainer_iters,
         }
-        latest_ckpt = train_loop(model, buf, cfg, device='cpu')
+        # pass the chosen device to the trainer so tensors and model stay on same device
+        latest_ckpt = train_loop(model, buf, cfg, device=device)
         print(f"✓ Training complete, checkpoint saved: {latest_ckpt}\n")
     except Exception as e:
         print(f"✗ Training failed: {e}")
@@ -96,7 +103,7 @@ def run_iteration(
     # Step 4: Evaluate and promote
     print(f"[4/4] Evaluating and promoting...")
     try:
-        from training.eval_loop import promote_if_better
+        from .eval_loop import promote_if_better
 
         stats = promote_if_better(
             agent_dir,

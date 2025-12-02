@@ -11,6 +11,7 @@ from typing import Dict, Any, Optional
 from training.config import TrainConfig
 from training.replay_buffer import ReplayBuffer
 from training.batch_sampler import DynamicBatchSampler
+from .device import get_device
 
 
 class CheckpointManager:
@@ -46,7 +47,7 @@ class CheckpointManager:
             for f in ckpts[:-self.keep_last_n]:
                 os.remove(os.path.join(self.ckpt_dir, f))
     
-    def load_latest(self, model: nn.Module, optimizer: optim.Optimizer, scaler: Optional[Any] = None) -> int:
+    def load_latest(self, model: nn.Module, optimizer: optim.Optimizer, scaler: Optional[Any] = None, device: torch.device | None = None) -> int:
         """Load latest checkpoint. Return step number."""
         ckpts = sorted([f for f in os.listdir(self.ckpt_dir) if f.startswith('ckpt_')])
         if not ckpts:
@@ -54,7 +55,9 @@ class CheckpointManager:
         
         latest = ckpts[-1]
         path = os.path.join(self.ckpt_dir, latest)
-        ckpt = torch.load(path, map_location=self.ckpt_dir.split('/')[0])  # rough map_location guess
+        # load to provided device when possible, else to CPU
+        map_loc = device if device is not None else 'cpu'
+        ckpt = torch.load(path, map_location=map_loc)
         
         model.load_state_dict(ckpt['model_state_dict'])
         optimizer.load_state_dict(ckpt['optimizer_state_dict'])
@@ -67,16 +70,16 @@ class CheckpointManager:
 def train_step(
     model: nn.Module,
     batch: list,
-    device: str,
+    device: torch.device,
     loss_fn_pi: nn.Module,
     loss_fn_v: nn.Module,
     use_amp: bool = False,
     dtype: torch.dtype = torch.float32,
-) -> float:
-    """Single training step with optional AMP."""
+) -> torch.Tensor:
+    """Single training step with optional AMP. Returns the loss tensor (on device)."""
     if not batch:
-        return 0.0
-    
+        return torch.tensor(0.0, device=device)
+
     # Fast numpy-based tensor creation
     try:
         states = torch.tensor(np.array([b[0] for b in batch]), dtype=dtype, device=device)
@@ -84,8 +87,8 @@ def train_step(
         outcomes = torch.tensor(np.array([b[3] for b in batch]), dtype=dtype, device=device)
     except Exception as e:
         print(f"Batch loading error: {e}")
-        return 0.0
-    
+        return torch.tensor(0.0, device=device)
+
     # Forward with optional AMP
     if use_amp:
         with torch.cuda.amp.autocast(dtype=dtype):
@@ -100,8 +103,8 @@ def train_step(
         loss_pi = loss_fn_pi(pi_logits, target)
         loss_v = loss_fn_v(v.squeeze(-1), outcomes)
         loss = loss_pi + loss_v
-    
-    return float(loss.item())
+
+    return loss
 
 
 def train_loop_with_grad_accum(
@@ -112,7 +115,7 @@ def train_loop_with_grad_accum(
     """Training loop with gradient accumulation and checkpointing."""
     
     # Device setup
-    device = torch.device(cfg.device if cfg.device != 'rocm' else 'cuda')
+    device = get_device(getattr(cfg, 'device', None))
     model.to(device)
     
     # Optimizer & scaler
@@ -154,22 +157,25 @@ def train_loop_with_grad_accum(
         model.train()
         epoch_loss = 0.0
         accum_loss = 0.0
-        
+
+        # ensure grads zeroed before accumulation
+        optimizer.zero_grad()
+
         for iter_in_epoch in range(cfg.iters_per_epoch):
             batch = batch_sampler.sample(cfg.batch_size)
             if not batch:
                 continue
-            
+
             loss = train_step(model, batch, device, loss_fn_pi, loss_fn_v, cfg.use_amp, dtype)
-            accum_loss += loss / cfg.grad_accum_steps
-            
+            # loss is a tensor on device
+            accum_loss += loss.item() / cfg.grad_accum_steps
+
             # Backward pass
             if cfg.use_amp and scaler is not None:
-                scaler.scale(torch.tensor(loss / cfg.grad_accum_steps)).backward()
+                scaler.scale(loss / cfg.grad_accum_steps).backward()
             else:
-                # Manual backward for gradient accumulation
-                pass
-            
+                (loss / cfg.grad_accum_steps).backward()
+
             # Update every grad_accum_steps
             if (iter_in_epoch + 1) % cfg.grad_accum_steps == 0:
                 if cfg.use_amp and scaler is not None:
@@ -178,22 +184,22 @@ def train_loop_with_grad_accum(
                 else:
                     optimizer.step()
                 optimizer.zero_grad()
-                
+
                 step += 1
                 epoch_loss += accum_loss
                 accum_loss = 0.0
-                
+
                 # Logging
                 if step % 10 == 0 and cfg.verbose:
-                    print(f"[{epoch}:{iter_in_epoch}] step={step}, loss={loss:.4f}")
-                
+                    print(f"[{epoch}:{iter_in_epoch}] step={step}, loss={loss.item():.4f}")
+
                 # Checkpoint
                 if step % cfg.ckpt_every_steps == 0:
-                    metrics = {'loss': loss, 'step': step, 'epoch': epoch}
+                    metrics = {'loss': loss.item(), 'step': step, 'epoch': epoch}
                     path = ckpt_mgr.save(step, model, optimizer, scaler, metrics)
                     print(f"[Checkpoint] saved to {path}")
-                    
-                    logs.append({'step': step, 'loss': loss, 'epoch': epoch})
+
+                    logs.append({'step': step, 'loss': loss.item(), 'epoch': epoch})
                     with open(log_path, 'w') as f:
                         json.dump(logs, f, indent=2)
     
